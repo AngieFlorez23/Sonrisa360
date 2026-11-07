@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}{% block title %}Mi panel — Sonrisa360{% endblock %}
+{% block content %}<h2>Mi panel — {{ perfil }}</h2>
+<p class="text-muted">Bienvenido, {{ clinic_usuario.usuario }}. Aquí encontrarás tu información autorizada.</p>
+{% if es_medico %}<div class="alert alert-info">{{ medico_actual.nombre_completo }} — {{ medico_actual.especialidad.nombre_especialidad }} · <a href="{% url 'medico_detail' medico_actual.pk %}">Mi perfil profesional</a></div>{% endif %}
+<div class="row g-3 mb-4"><div class="col-sm-6"><div class="card border-primary"><div class="card-body"><h5>Mis citas</h5><p class="display-6">{{ total_citas }}</p><a href="{% url 'citas_list' %}">Consultar agenda</a></div></div></div>
+{% if es_paciente %}<div class="col-sm-6"><div class="card border-info"><div class="card-body"><h5>Mis cotizaciones</h5><p class="display-6">{{ total_cotizaciones }}</p><a href="{% url 'mis_cotizaciones' %}">Consultar cotizaciones</a></div></div></div>{% endif %}</div>
+{% if es_paciente %}<a class="btn btn-primary mb-4" href="{% url 'cita_create' %}">Agendar nueva cita</a>{% endif %}
+<div class="card"><div class="card-header">Próximas citas</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Fecha</th><th>Hora</th><th>Profesional</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for cita in proximas_citas %}<tr><td>{{ cita.fecha }}</td><td>{{ cita.hora }}</td><td>{{ cita.medico.nombre_completo }}</td><td>{{ cita.get_estado_display }}</td><td><a href="{% url 'cita_detail' cita.pk %}">Ver</a></td></tr>{% empty %}<tr><td colspan="5" class="p-4">No tienes próximas citas.</td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

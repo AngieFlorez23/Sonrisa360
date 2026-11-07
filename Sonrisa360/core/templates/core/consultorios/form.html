@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{% if consultorio %}Editar{% else %}Nuevo{% endif %} Consultorio - Sonrisa360{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'consultorios_list' %}">Consultorios</a></li>
+        <li class="breadcrumb-item active">{% if consultorio %}Editar{% else %}Nuevo{% endif %}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-building-{% if consultorio %}gear{% else %}add{% endif %} me-2"></i>
+                    {% if consultorio %}Editar Consultorio{% else %}Nuevo Consultorio{% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Consultorio *</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{% if consultorio %}{{ consultorio.nombre }}{% endif %}" 
+                               placeholder="Ej: Consultorio #1, Sala de Odontología..." required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ubicacion" class="form-label">Ubicación *</label>
+                        <textarea class="form-control" id="ubicacion" name="ubicacion" rows="3" 
+                                  placeholder="Descripción de la ubicación del consultorio..." required>{% if consultorio %}{{ consultorio.ubicacion }}{% endif %}</textarea>
+                        <div class="form-text">Incluye piso, número de habitación, referencias, etc.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'consultorios_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>
+                            {% if consultorio %}Actualizar{% else %}Guardar{% endif %} Consultorio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{% if paciente %}Editar{% else %}Nuevo{% endif %} Paciente - Sonrisa360{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'pacientes_list' %}">Pacientes</a></li>
+        <li class="breadcrumb-item active">{% if paciente %}Editar{% else %}Nuevo{% endif %}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-{% if paciente %}gear{% else %}plus{% endif %} me-2"></i>
+                    {% if paciente %}Editar Paciente{% else %}Nuevo Paciente{% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Datos de usuario -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h6 class="text-primary border-bottom pb-2">
+                                <i class="bi bi-person-circle me-2"></i>Datos de Usuario
+                            </h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="usuario" class="form-label">Usuario *</label>
+                            <input type="text" class="form-control" id="usuario" name="usuario" 
+                                   value="{% if paciente %}{{ paciente.usuario.usuario }}{% endif %}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contrasenia" class="form-label">
+                                Contraseña {% if not paciente %}*{% else %}<small>(dejar vacío para mantener actual)</small>{% endif %}
+                            </label>
+                            <input type="password" class="form-control" id="contrasenia" name="contrasenia" 
+                                   {% if not paciente %}required{% endif %}>
+                        </div>
+                    </div>
+
+                    <div class="mb-3"><label for="correo_electronico_usuario" class="form-label">Correo de recuperación de acceso (opcional)</label>
+                    <input type="email" class="form-control" id="correo_electronico_usuario" name="correo_electronico_usuario" value="{% if paciente %}{{ paciente.usuario.correo_electronico }}{% elif medico %}{{ medico.usuario.correo_electronico }}{% endif %}"></div>
+                    <!-- Datos personales -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h6 class="text-primary border-bottom pb-2">
+                                <i class="bi bi-person-vcard me-2"></i>Datos Personales
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nombre_paciente" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre_paciente" name="nombre_paciente" 
+                                   value="{% if paciente %}{{ paciente.nombre_paciente }}{% endif %}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="apellido_paciente" class="form-label">Apellido *</label>
+                            <input type="text" class="form-control" id="apellido_paciente" name="apellido_paciente" 
+                                   value="{% if paciente %}{{ paciente.apellido_paciente }}{% endif %}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="documento" class="form-label">Documento *</label>
+                            <input type="text" inputmode="numeric" class="form-control" id="documento" name="documento" 
+                                   value="{% if paciente %}{{ paciente.documento }}{% endif %}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="genero_paciente" class="form-label">Género *</label>
+                            <select class="form-select" id="genero_paciente" name="genero_paciente" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="M" {% if paciente and paciente.genero_paciente == 'M' %}selected{% endif %}>Masculino</option>
+                                <option value="F" {% if paciente and paciente.genero_paciente == 'F' %}selected{% endif %}>Femenino</option>
+                                <option value="O" {% if paciente and paciente.genero_paciente == 'O' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                                   value="{% if paciente %}{{ paciente.fecha_nacimiento|date:'Y-m-d' }}{% endif %}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="telefono" name="telefono" 
+                                   value="{% if paciente %}{{ paciente.telefono }}{% endif %}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="direccion" class="form-label">Dirección *</label>
+                        <textarea class="form-control" id="direccion" name="direccion" rows="3" required>{% if paciente %}{{ paciente.direccion }}{% endif %}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'pacientes_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>
+                            {% if paciente %}Actualizar{% else %}Guardar{% endif %} Paciente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

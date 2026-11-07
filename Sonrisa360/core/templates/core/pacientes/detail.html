@@ -1,0 +1,129 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ paciente.nombre_completo }} - Pacientes - Sonrisa360{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'pacientes_list' %}">Pacientes</a></li>
+        <li class="breadcrumb-item active">{{ paciente.nombre_completo }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-vcard me-2"></i>Información del Paciente
+                </h5>
+                <div>
+                    {% if es_admin %}<a href="{% url 'paciente_edit' paciente.pk %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </a>{% endif %}
+                    {% if es_admin %}<a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </a>{% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Nombre Completo:</strong><br>
+                            <span class="h5">{{ paciente.nombre_completo }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Documento:</strong><br>
+                            {{ paciente.documento }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Género:</strong><br>
+                            <span class="badge bg-{% if paciente.genero_paciente == 'M' %}primary{% elif paciente.genero_paciente == 'F' %}success{% else %}secondary{% endif %}">
+                                {{ paciente.get_genero_paciente_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Fecha de Nacimiento:</strong><br>
+                            {{ paciente.fecha_nacimiento }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Usuario del Sistema:</strong><br>
+                            {{ paciente.usuario.usuario }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Teléfono:</strong><br>
+                            <a href="tel:{{ paciente.telefono }}" class="text-decoration-none">
+                                <i class="bi bi-telephone me-1"></i>{{ paciente.telefono }}
+                            </a>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Dirección:</strong><br>
+                            {{ paciente.direccion }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-activity me-2"></i>Acciones Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'cita_create' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-calendar-plus me-2"></i>Programar Cita
+                    </a>
+                    {% if es_admin %}<a href="{% url 'paciente_edit' paciente.pk %}" class="btn btn-outline-warning">
+                        <i class="bi bi-pencil me-2"></i>Editar Información
+                    </a>{% endif %}
+                    <a href="{% url 'pacientes_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver al Listado
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información Adicional
+                </h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>ID del Paciente:</strong> {{ paciente.id_paciente }}<br>
+                    <strong>Rol de Usuario:</strong> {{ paciente.usuario.rol }}<br>
+                    <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <div class="text-center">
+            <a href="{% url 'pacientes_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Volver al Listado de Pacientes
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

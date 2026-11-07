@@ -1,0 +1,1 @@
+{% extends 'core/base.html' %}{% block title %}Agregar concepto{% endblock %}{% block content %}<h2>Agregar concepto a cotización #{{ cotizacion.pk }}</h2><div class="card"><div class="card-body"><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Guardar concepto</button></form></div></div>{% endblock %}

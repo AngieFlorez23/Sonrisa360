@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+{% block title %}Agendar cita - Sonrisa360{% endblock %}
+{% block content %}<div class="row justify-content-center"><div class="col-lg-8"><h2>{% if cita %}Editar cita{% else %}Agendar cita{% endif %}</h2>
+<p class="text-muted">Se comprueba la disponibilidad del médico y del consultorio antes de guardar.</p>
+<div class="card shadow-sm"><div class="card-body"><form method="post">{% csrf_token %}
+<div class="row g-3">
+<div class="col-sm-6"><label class="form-label" for="fecha">Fecha</label><input required type="date" id="fecha" name="fecha" min="{{ fecha_minima }}" class="form-control" value="{% if cita %}{{ cita.fecha|date:'Y-m-d' }}{% else %}{{ request.POST.fecha }}{% endif %}"></div>
+<div class="col-sm-6"><label class="form-label" for="hora">Hora</label><input required type="time" id="hora" name="hora" class="form-control" value="{% if cita %}{{ cita.hora|time:'H:i' }}{% else %}{{ request.POST.hora }}{% endif %}"></div>
+<div class="col-sm-6"><label class="form-label" for="medico">Odontólogo</label><select required id="medico" name="medico" class="form-select"><option value="">Seleccionar...</option>{% for m in medicos %}<option value="{{ m.pk }}" {% if cita.medico_id == m.pk or request.POST.medico == m.pk|stringformat:'s' %}selected{% endif %}>{{ m.nombre_completo }} — {{ m.especialidad }}</option>{% endfor %}</select></div>
+<div class="col-sm-6"><label class="form-label" for="consultorio">Consultorio</label><select required id="consultorio" name="consultorio" class="form-select"><option value="">Seleccionar...</option>{% for c in consultorios %}<option value="{{ c.pk }}" {% if cita.consultorio_id == c.pk or request.POST.consultorio == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}</select></div>
+{% if not es_form_paciente %}<div class="col-sm-6"><label class="form-label" for="paciente">Paciente</label><select id="paciente" name="paciente" class="form-select"><option value="">Sin asignar (solo estado disponible)</option>{% for p in pacientes %}<option value="{{ p.pk }}" {% if cita.paciente_id == p.pk %}selected{% endif %}>{{ p.nombre_completo }}</option>{% endfor %}</select></div>
+<div class="col-sm-6"><label class="form-label" for="estado">Estado</label><select id="estado" name="estado" class="form-select">{% for valor,texto in estados %}<option value="{{ valor }}" {% if cita.estado == valor %}selected{% endif %}>{{ texto }}</option>{% endfor %}</select></div>
+<div class="col-sm-6"><label class="form-label" for="duracion_minutos">Duración (minutos)</label><input class="form-control" id="duracion_minutos" type="number" name="duracion_minutos" min="15" max="240" step="15" value="{{ cita.duracion_minutos|default:30 }}"></div>
+{% else %}<div class="col-12"><div class="alert alert-info">La cita se asignará a tu perfil de paciente, con duración de 30 minutos. Solo puedes consultar tus propias citas.</div></div>{% endif %}
+</div><div class="mt-4 d-flex gap-2"><button class="btn btn-primary" type="submit">Guardar cita</button><a href="{% url 'citas_list' %}" class="btn btn-outline-secondary">Volver</a></div></form></div></div></div></div>{% endblock %}

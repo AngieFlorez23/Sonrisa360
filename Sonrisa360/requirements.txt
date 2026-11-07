@@ -1,0 +1,2 @@
+# Versión LTS compatible con el proyecto; instala el parche de seguridad 5.2.x más reciente disponible.
+Django>=5.2.6,<5.3
