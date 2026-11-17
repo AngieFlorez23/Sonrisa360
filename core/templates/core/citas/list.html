@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+{% block title %}Citas - Sonrisa360{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between gap-3 mb-4"><div><h2>{% if es_paciente %}Mis citas{% elif es_medico %}Mi agenda{% else %}Gestión de citas{% endif %}</h2><p class="text-muted">Programación y seguimiento odontológico</p></div>
+{% if es_gestor or es_paciente %}<div><a class="btn btn-primary" href="{% url 'cita_create' %}">+ Agendar cita</a></div>{% endif %}</div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Fecha</th><th>Hora</th>{% if not es_paciente %}<th>Paciente</th>{% endif %}{% if not es_medico %}<th>Médico</th>{% endif %}<th>Consultorio</th><th>Estado</th><th>Acciones</th></tr></thead>
+<tbody>{% for cita in citas %}<tr><td>{{ cita.fecha }}</td><td>{{ cita.hora|time:'H:i' }}</td>{% if not es_paciente %}<td>{{ cita.paciente.nombre_completo|default:'Sin asignar' }}</td>{% endif %}{% if not es_medico %}<td>{{ cita.medico.nombre_completo }}</td>{% endif %}<td>{{ cita.consultorio.nombre }}</td><td><span class="badge bg-secondary">{{ cita.get_estado_display }}</span></td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'cita_detail' cita.pk %}">Ver</a>{% if es_gestor %} <a class="btn btn-sm btn-outline-secondary" href="{% url 'cita_edit' cita.pk %}">Editar</a>{% endif %}{% if es_gestor or es_paciente %}{% if cita.estado != 'cancelada' and cita.estado != 'atendida' %} <a class="btn btn-sm btn-outline-danger" href="{% url 'cita_delete' cita.pk %}">Cancelar</a>{% endif %}{% endif %}</td></tr>
+{% empty %}<tr><td colspan="7" class="text-center text-muted py-5">No hay citas para mostrar.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

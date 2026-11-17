@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% block title %}Crear cuenta de paciente — Sonrisa360{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8 col-xl-7">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white py-3">
+        <h1 class="h4 mb-1"><i class="bi bi-person-plus me-2"></i>Crear mi cuenta</h1>
+        <p class="mb-0 small">Regístrate como paciente para solicitar y consultar tus citas.</p>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-warning small">
+          <strong>Demostración académica:</strong> utiliza solo datos ficticios. Esta versión no debe usarse
+          para registrar pacientes reales sin una política de tratamiento de datos y medidas de seguridad revisadas.
+        </div>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+          <h2 class="h6 text-primary mb-3">Datos del paciente</h2>
+          <div class="row g-3">
+            {% for field in form %}
+              {% if field.name != "usuario" and field.name != "correo_electronico_usuario" and field.name != "password1" and field.name != "password2" and field.name != "acepto_datos" %}
+              <div class="col-md-6">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                {% if field.name == "genero_paciente" %}
+                  <select class="form-select{% if field.errors %} is-invalid{% endif %}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" required>
+                    {% for value, label in field.field.choices %}<option value="{{ value }}"{% if field.value|stringformat:'s' == value|stringformat:'s' %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                  </select>
+                {% else %}
+                  <input class="form-control{% if field.errors %} is-invalid{% endif %}" type="{% if field.name == 'fecha_nacimiento' %}date{% else %}text{% endif %}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:'' }}" {% if field.field.required %}required{% endif %}>
+                {% endif %}
+                {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <hr class="my-4">
+          <h2 class="h6 text-primary mb-3">Datos de acceso</h2>
+          <div class="row g-3">
+            {% for field in form %}
+              {% if field.name == "usuario" or field.name == "correo_electronico_usuario" or field.name == "password1" or field.name == "password2" %}
+                <div class="col-md-6">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }} *</label>
+                  <input class="form-control{% if field.errors %} is-invalid{% endif %}" type="{% if field.name == 'correo_electronico_usuario' %}email{% elif field.name == 'password1' or field.name == 'password2' %}password{% else %}text{% endif %}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" {% if field.name != 'password1' and field.name != 'password2' %}value="{{ field.value|default_if_none:'' }}"{% endif %} required autocomplete="{% if field.name == 'password1' %}new-password{% elif field.name == 'password2' %}new-password{% elif field.name == 'correo_electronico_usuario' %}email{% else %}username{% endif %}">
+                  {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="form-check mt-4">
+            <input type="checkbox" class="form-check-input{% if form.acepto_datos.errors %} is-invalid{% endif %}" name="acepto_datos" id="id_acepto_datos" required {% if form.acepto_datos.value %}checked{% endif %}>
+            <label class="form-check-label" for="id_acepto_datos">Entiendo que este es un prototipo académico y usaré únicamente datos ficticios.</label>
+            {% for err in form.acepto_datos.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+          </div>
+          <button class="btn btn-primary w-100 mt-4" type="submit"><i class="bi bi-check-circle me-2"></i>Crear cuenta y entrar</button>
+        </form>
+        <div class="text-center mt-3"><a href="{% url 'login' %}">¿Ya tienes cuenta? Iniciar sesión</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

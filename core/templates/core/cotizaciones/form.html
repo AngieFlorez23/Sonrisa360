@@ -1,0 +1,1 @@
+{% extends 'core/base.html' %}{% block title %}Nueva cotización{% endblock %}{% block content %}<h2>Nueva cotización</h2><div class="card"><div class="card-body"><form method="post">{% csrf_token %}<h5>Datos generales</h5>{{ form.as_p }}<h5>Primer concepto</h5>{{ item_form.as_p }}<button class="btn btn-primary">Guardar cotización</button></form></div></div>{% endblock %}

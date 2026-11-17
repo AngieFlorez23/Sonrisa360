@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ medico.nombre_completo }} - Médicos - Sonrisa360{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'medicos_list' %}">Médicos</a></li>
+        <li class="breadcrumb-item active">{{ medico.nombre_completo }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% if es_admin %}<div class="mb-3"><a href="{% url 'horarios_medico' medico.pk %}" class="btn btn-outline-primary">Configurar horario del médico</a></div>{% endif %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-badge me-2"></i>Información del Médico
+                </h5>
+                <div>
+                    {% if es_admin %}<a href="{% url 'medico_edit' medico.pk %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </a>{% endif %}
+                    {% if es_admin %}<a href="{% url 'medico_delete' medico.pk %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </a>{% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Nombre Completo:</strong><br>
+                            <span class="h5">{{ medico.nombre_completo }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Especialidad:</strong><br>
+                            <span class="badge bg-primary fs-6">{{ medico.especialidad.nombre_especialidad }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Género:</strong><br>
+                            <span class="badge bg-{% if medico.genero_medico == 'M' %}primary{% elif medico.genero_medico == 'F' %}success{% else %}secondary{% endif %}">
+                                {{ medico.get_genero_medico_display }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Usuario del Sistema:</strong><br>
+                            {{ medico.usuario.usuario }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Teléfono:</strong><br>
+                            <a href="tel:{{ medico.telefono }}" class="text-decoration-none">
+                                <i class="bi bi-telephone me-1"></i>{{ medico.telefono }}
+                            </a>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Correo Electrónico:</strong><br>
+                            <a href="mailto:{{ medico.correo_electronico }}" class="text-decoration-none">
+                                <i class="bi bi-envelope me-1"></i>{{ medico.correo_electronico }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-activity me-2"></i>Acciones Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {% if es_gestor %}<a href="{% url 'cita_create' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-calendar-plus me-2"></i>Crear Horario de Citas
+                    </a>{% endif %}
+                    {% if es_admin %}<a href="{% url 'medico_edit' medico.pk %}" class="btn btn-outline-warning">
+                        <i class="bi bi-pencil me-2"></i>Editar Información
+                    </a>{% endif %}
+                    <a href="{% url 'medicos_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver al Listado
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

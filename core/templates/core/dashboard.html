@@ -1,0 +1,202 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Sonrisa360{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </h1>
+        <p class="text-muted">Bienvenido al sistema de gestión clínica Sonrisa360</p>
+    </div>
+</div>
+
+<!-- Tarjetas de estadísticas -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Pacientes Registrados
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_pacientes }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Médicos Activos
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_medicos }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-person-badge text-success" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Consultorios
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_consultorios }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-building text-info" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Próximas Citas
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ proximas_citas|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-calendar-check text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Próximas citas -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="bi bi-calendar-week me-2"></i>Próximas Citas
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if proximas_citas %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Paciente</th>
+                                    <th>Médico</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cita in proximas_citas %}
+                                <tr>
+                                    <td>{{ cita.fecha }}</td>
+                                    <td>{{ cita.hora }}</td>
+                                    <td>
+                                        {% if cita.paciente %}
+                                            {{ cita.paciente.nombre_completo }}
+                                        {% else %}
+                                            <span class="text-muted">Sin asignar</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ cita.medico.nombre_completo }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if cita.estado == 'programada' %}success{% elif cita.estado == 'disponible' %}warning{% else %}secondary{% endif %}">
+                                            {{ cita.get_estado_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'citas_list' %}" class="btn btn-primary">
+                            <i class="bi bi-calendar-check me-1"></i>Ver todas las citas
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-calendar-x" style="font-size: 3rem;"></i>
+                        <p class="mt-2">No hay citas programadas</p>
+                        <a href="{% url 'cita_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Programar primera cita
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="bi bi-lightning me-2"></i>Acciones Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'paciente_create' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-person-plus me-2"></i>Nuevo Paciente
+                    </a>
+                    <a href="{% url 'medico_create' %}" class="btn btn-outline-success">
+                        <i class="bi bi-person-badge-fill me-2"></i>Nuevo Médico
+                    </a>
+                    <a href="{% url 'cita_create' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-calendar-plus me-2"></i>Nueva Cita
+                    </a>
+                    <a href="{% url 'consultorio_create' %}" class="btn btn-outline-info">
+                        <i class="bi bi-building-add me-2"></i>Nuevo Consultorio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+</style>
+{% endblock %}
